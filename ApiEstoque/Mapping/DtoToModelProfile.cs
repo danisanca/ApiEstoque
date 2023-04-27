@@ -1,4 +1,5 @@
-﻿using ApiEstoque.Dtos.User;
+﻿using ApiEstoque.Dtos.Office;
+using ApiEstoque.Dtos.User;
 using ApiEstoque.Models;
 using AutoMapper;
 
@@ -14,6 +15,13 @@ namespace ApiEstoque.Mapping
             CreateMap<UserModel, UserDtoCreate>()
                     .ReverseMap();
             CreateMap<UserModel, UserDtoUpdate>()
+                    .ReverseMap();
+            #endregion
+
+            #region Office
+            CreateMap<OfficeModel, OfficeDto>()
+                    .ReverseMap();
+            CreateMap<OfficeModel, OfficeDtoCreate>()
                     .ReverseMap();
             #endregion
 

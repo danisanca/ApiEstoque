@@ -17,56 +17,106 @@ namespace ApiEstoque.Repository
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public async Task<UserModel> Create(UserDtoCreate user)
+        public async Task<UserDto> Create(UserDtoCreate user)
         {
             var model = _mapper.Map<UserModel>(user);
             model.Status = "Active";
             model.CreateAt = DateTime.UtcNow;
+            model.SetPasswordHash();
             await _dbContext.Users.AddAsync(model);
             await _dbContext.SaveChangesAsync();
-            return model;
+            return _mapper.Map<UserDto>(model);
         }
 
         public async Task<bool> Delete(int id)
         {
-            UserModel user = await GetById(id);
-            if (user == null)
+            try
             {
-                throw new Exception($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
+                UserModel user = _mapper.Map<UserModel>(await GetById(id));
+                if (user == null)
+                {
+                    throw new Exception($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
+                }
+                _dbContext.Users.Remove(user);
+                await _dbContext.SaveChangesAsync();
+                return true;
             }
-            _dbContext.Users.Remove(user);
-            await _dbContext.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<List<UserModel>> GetAll()
-        {
-            return await _dbContext.Users.ToListAsync();
-        }
-
-        public async Task<UserModel> GetById(int id)
-        {
-            return await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
-        }
-
-        public async Task<UserModel> Update(UserDtoUpdate user, int id)
-        {
-            UserModel findUser = await GetById(id);
-            if (findUser == null)
+            catch (Exception ex)
             {
-                throw new Exception($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
+                throw ex;
             }
-            findUser.Name = user.Name;
-            findUser.Email = user.Email;
-            findUser.Password = user.Password;
-            if (user.Status != null || user.Status != "")
+            
+        }
+
+        public async Task<List<UserDto>> GetAll()
+        {
+            try
             {
-                findUser.Status = user.Status;
+                var listUser = await _dbContext.Users.ToListAsync();
+                return _mapper.Map<List<UserDto>>(listUser);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
+        }
+
+        public async Task<UserModel> GetByEmail(string email)
+        {
+            try
+            {
+                var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<UserDto> GetById(int id)
+        {
+            try
+            {
+                var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+                return _mapper.Map<UserDto>(user);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
            
-            _dbContext.Users.Update(findUser);
-            await _dbContext.SaveChangesAsync();
-            return findUser;
+        }
+
+        public async Task<UserDto> Update(UserDtoUpdate user, int id)
+        {
+            try
+            {
+
+                UserModel findUser = _mapper.Map<UserModel>(await GetById(id));
+                if (findUser == null)
+                {
+                    throw new Exception($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
+                }
+                findUser.Name = user.Name;
+                findUser.Email = user.Email;
+                if (user.Status != null || user.Status != "")
+                {
+                    findUser.Status = user.Status;
+                }
+                findUser.UpdateAt = DateTime.UtcNow;
+
+                _dbContext.Users.Update(findUser);
+                await _dbContext.SaveChangesAsync();
+                return _mapper.Map<UserDto>(findUser);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            
         }
     }
 }

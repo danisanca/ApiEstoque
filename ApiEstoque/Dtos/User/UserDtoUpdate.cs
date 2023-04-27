@@ -13,10 +13,6 @@ namespace ApiEstoque.Dtos.User
         [StringLength(45, ErrorMessage = "Email deve ter no maximo {1} characters.")]
         public string Email { get; set; }
 
-        [StringLength(12, ErrorMessage = "Nome deve ter no maximo {1} characters.")]
-        [Required(ErrorMessage = "Senha é um campo obrigatório.")]
-        public string Password { get; set; }
-
         public string? Status { get; set; }
     }
 }

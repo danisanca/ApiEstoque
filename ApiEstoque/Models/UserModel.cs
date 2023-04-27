@@ -1,4 +1,6 @@
-﻿namespace ApiEstoque.Models
+﻿using ApiEstoque.Helpers;
+
+namespace ApiEstoque.Models
 {
     public class UserModel
     {
@@ -17,5 +19,12 @@
             } 
         }
         public DateTime? UpdateAt { get; set; }
+
+        public OfficeModel Office { get; set; }
+
+        public void SetPasswordHash()
+        {
+            Password = Password.CreateHash();
+        }
     }
 }

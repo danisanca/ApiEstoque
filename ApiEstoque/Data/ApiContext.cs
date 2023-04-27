@@ -8,11 +8,14 @@ namespace ApiEstoque.Data
     {
         public ApiContext(DbContextOptions<ApiContext>options):base(options) {}
         public DbSet<UserModel> Users { get; set; }
+        public DbSet<OfficeModel> Offices { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new UserMap());
+            modelBuilder.ApplyConfiguration(new OfficeMap());
             base.OnModelCreating(modelBuilder);
         }
     }
 }
+        
