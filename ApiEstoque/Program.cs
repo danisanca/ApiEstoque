@@ -45,6 +45,9 @@ namespace ApiEstoque
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ILoginRepository, LoginRepository>();
             builder.Services.AddScoped<IOfficeRepository, OfficeRepository>();
+            builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
+            builder.Services.AddScoped<IStockRepository, StockRepository>();
+            builder.Services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
 
             //Configurações do Token
             var signingConfigurations = new SigningConfigurations();

@@ -19,6 +19,11 @@ namespace ApiEstoque.Repository
         }
         public async Task<UserDto> Create(UserDtoCreate user)
         {
+            UserModel findEmail = await _dbContext.Users.SingleOrDefaultAsync(p => p.Email.Equals(user.Email));
+            if (findEmail != null)
+            {
+                throw new ArgumentException($"Email:{user.Email} já cadastrado.");
+            }
             var model = _mapper.Map<UserModel>(user);
             model.Status = "Active";
             model.CreateAt = DateTime.UtcNow;
@@ -32,10 +37,10 @@ namespace ApiEstoque.Repository
         {
             try
             {
-                UserModel user = _mapper.Map<UserModel>(await GetById(id));
+                UserModel user = await _dbContext.Users.SingleOrDefaultAsync(p => p.Id.Equals(id));
                 if (user == null)
                 {
-                    throw new Exception($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
+                    throw new ArgumentException($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
                 }
                 _dbContext.Users.Remove(user);
                 await _dbContext.SaveChangesAsync();
@@ -94,7 +99,7 @@ namespace ApiEstoque.Repository
             try
             {
 
-                UserModel findUser = _mapper.Map<UserModel>(await GetById(id));
+                UserModel findUser = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
                 if (findUser == null)
                 {
                     throw new Exception($"Usuario para o ID: {id} não foi encontrado no banco de dados.");

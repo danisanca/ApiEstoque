@@ -4,6 +4,7 @@ using ApiEstoque.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiEstoque.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20230428203413_NewImplementation")]
+    partial class NewImplementation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,9 +45,6 @@ namespace ApiEstoque.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -94,10 +94,10 @@ namespace ApiEstoque.Migrations
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("Id");
+                    b.Property<DateTime>("_creatAt")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("ProductCode")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.ToTable("Products");
                 });
@@ -130,6 +130,9 @@ namespace ApiEstoque.Migrations
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime>("_creatAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Stock");
@@ -149,13 +152,16 @@ namespace ApiEstoque.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Reason")
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("_createAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("reason")
                         .IsRequired()
                         .HasMaxLength(45)
                         .HasColumnType("nvarchar(45)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -200,9 +206,6 @@ namespace ApiEstoque.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });

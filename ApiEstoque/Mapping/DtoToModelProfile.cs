@@ -1,4 +1,7 @@
 ﻿using ApiEstoque.Dtos.Office;
+using ApiEstoque.Dtos.Product;
+using ApiEstoque.Dtos.Stock;
+using ApiEstoque.Dtos.Transaction_History;
 using ApiEstoque.Dtos.User;
 using ApiEstoque.Models;
 using AutoMapper;
@@ -22,6 +25,31 @@ namespace ApiEstoque.Mapping
             CreateMap<OfficeModel, OfficeDto>()
                     .ReverseMap();
             CreateMap<OfficeModel, OfficeDtoCreate>()
+                    .ReverseMap();
+            #endregion
+
+            #region Product
+            CreateMap<ProductModel, ProductDto>()
+                    .ReverseMap();
+            CreateMap<ProductModel, ProductDtoCreate>()
+                    .ReverseMap();
+            CreateMap<ProductModel, ProductDtoUpdate>()
+                    .ReverseMap();
+            #endregion
+
+            #region Stock
+            CreateMap<StockModel, StockDto>()
+                    .ReverseMap();
+            CreateMap<StockModel, StockDtoCreate>()
+                    .ReverseMap();
+            CreateMap<StockModel, StockDtoUpdate>()
+                    .ReverseMap();
+            #endregion
+
+            #region TransactionHistory
+            CreateMap<TransactionHistoryModel, TransactionHistoryDto>()
+                    .ReverseMap();
+            CreateMap<TransactionHistoryModel, TransactionHistoryDtoCreate>()
                     .ReverseMap();
             #endregion
 

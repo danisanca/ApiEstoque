@@ -27,6 +27,7 @@ namespace ApiEstoque.Controllers
 
         [Authorize("Bearer")]
         [HttpPost]
+        [Route("Create")]
         public async Task<ActionResult<OfficeDto>> Cadastrar([FromBody] OfficeDtoCreate officeDtoCreate, string? tokenAdmin)
         {
             if (!ModelState.IsValid)
@@ -97,6 +98,7 @@ namespace ApiEstoque.Controllers
         }
         [Authorize("Bearer")]
         [HttpGet]
+        [Route("GetAll")]
         public async Task<ActionResult<List<OfficeDto>>> GetAll()
         {
             if (!ModelState.IsValid)
@@ -127,7 +129,7 @@ namespace ApiEstoque.Controllers
         }
         [Authorize("Bearer")]
         [HttpGet]
-        [Route("{id}")]
+        [Route("GetById/{id}")]
         public async Task<ActionResult<OfficeDto>> GetById(int id)
         {
             if (!ModelState.IsValid)
@@ -161,7 +163,7 @@ namespace ApiEstoque.Controllers
             }
         }
         [Authorize("Bearer")]
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)

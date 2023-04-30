@@ -34,7 +34,7 @@ namespace ApiEstoque.Repository
                 }
                 else
                 {
-                    throw new Exception($"Ja existe um office com o nome: {office.Name} cadastrado o usuario: {office.UserId}.");
+                    throw new ArgumentException($"Ja existe um office com o nome: {office.Name} cadastrado o usuario: {office.UserId}.");
                 }
             }
             catch (Exception ex)
@@ -48,10 +48,10 @@ namespace ApiEstoque.Repository
         {
             try
             {
-                OfficeModel office = _mapper.Map<OfficeModel>(await GetById(id));
+                OfficeModel office = await _dbContext.Offices.SingleOrDefaultAsync(p => p.Id.Equals(id));
                 if (office == null)
                 {
-                    throw new Exception($"Cargo para o ID: {id} não foi encontrado no banco de dados.");
+                    throw new ArgumentException($"Cargo para o ID: {id} não foi encontrado no banco de dados.");
                 }
                 _dbContext.Offices.Remove(office);
                 await _dbContext.SaveChangesAsync();

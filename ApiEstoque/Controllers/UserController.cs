@@ -24,6 +24,7 @@ namespace ApiEstoque.Controllers
 
 
         [HttpPost]
+        [Route("Create")]
         public async Task<ActionResult<UserDto>> Cadastrar([FromBody] UserDtoCreate userDtoCreate)
         {
             if (!ModelState.IsValid)
@@ -44,6 +45,7 @@ namespace ApiEstoque.Controllers
 
         [Authorize("Bearer")]
         [HttpGet]
+        [Route("GetAll")]
         public async Task<ActionResult<List<UserDto>>> GetAll()
         {
             if (!ModelState.IsValid)
@@ -61,10 +63,9 @@ namespace ApiEstoque.Controllers
             }
            
         }
-        //[ClaimsAuthorize("Cargo", "Estoquistas")]
         [Authorize("Bearer")]
         [HttpGet]
-        [Route("{id}")]
+        [Route("GetById/{id}")]
         public async Task<ActionResult<UserDto>> GetById(int id)
         {
             if (!ModelState.IsValid)
@@ -87,7 +88,7 @@ namespace ApiEstoque.Controllers
         }
 
         [Authorize("Bearer")]
-        [HttpPut("{id}")]
+        [HttpPut("Update/{id}")]
         public async Task<ActionResult> Put([FromBody] UserDtoUpdate user,int id)
         {
             if (!ModelState.IsValid)
@@ -114,7 +115,7 @@ namespace ApiEstoque.Controllers
         }
 
         [Authorize("Bearer")]
-        [HttpDelete("{id}")]
+        [HttpDelete("Delete/{id}")]
         public async Task<ActionResult> Delete(int id)
         {
             if (!ModelState.IsValid)
