@@ -31,6 +31,11 @@ namespace ApiEstoque.Repository
                 {
                     throw new ArgumentException($"ProdutoId: {data.ProductId} não foi encontrada no banco de dados.");
                 }
+                var findShop = await _dbContext.Shop.SingleOrDefaultAsync(p => p.Id.Equals(data.ShopId));
+                if (findShop == null)
+                {
+                    throw new ArgumentException($"ShopId: {data.ShopId} não foi encontrada no banco de dados.");
+                }
                 var model = _mapper.Map<TransactionHistoryModel>(data);
                 model.CreateAt = DateTime.UtcNow;
                 await _dbContext.TransactionsHistory.AddAsync(model);

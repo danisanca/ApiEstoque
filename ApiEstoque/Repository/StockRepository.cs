@@ -4,6 +4,7 @@ using ApiEstoque.Models;
 using ApiEstoque.Repository.interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ApiEstoque.Repository
 {
@@ -30,6 +31,11 @@ namespace ApiEstoque.Repository
                 if (validProductId == null)
                 {
                     throw new ArgumentException($"Id do produto: {product.ProductId}, não encontrado.");
+                }
+                var findShop = await _dbContext.Shop.SingleOrDefaultAsync(p => p.Id.Equals(product.ShopId));
+                if (findShop == null)
+                {
+                    throw new ArgumentException($"ShopId: {product.ShopId} não foi encontrada no banco de dados.");
                 }
                 var model = _mapper.Map<StockModel>(product);
                 model.Status = "Adicionado";

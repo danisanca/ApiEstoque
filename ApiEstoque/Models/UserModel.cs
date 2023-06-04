@@ -19,8 +19,8 @@ namespace ApiEstoque.Models
             } 
         }
         public DateTime? UpdateAt { get; set; }
-
         public OfficeModel Office { get; set; }
+        public ShopModel Shop { get; set; }
 
         public void SetPasswordHash()
         {

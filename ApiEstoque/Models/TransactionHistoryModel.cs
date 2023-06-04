@@ -10,11 +10,11 @@
             get { return _createAt; }
             set { _createAt = value == null ? DateTime.UtcNow : value; }
         }
-
-        public int ProductId { get; set; }
-        public ProductModel Product { get; set; }
-
+        public int ShopId { get; set; }
+        public ShopModel Shop { get; set; }
         public int UserId { get; set; }
         public UserModel User { get; set; }
+        public int ProductId { get; set; }
+        public ProductModel Product { get; set; }
     }
 }

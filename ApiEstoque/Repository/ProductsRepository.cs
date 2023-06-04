@@ -6,6 +6,7 @@ using ApiEstoque.Repository.interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ApiEstoque.Repository
 {
@@ -27,14 +28,18 @@ namespace ApiEstoque.Repository
                 var findProductExist = await VerifyProductExist(product.Name,product.ProductCode);
                 if (findProductExist == true)
                 {
-                    throw new Exception("Produto já cadastrado.");
+                    throw new ArgumentException("Produto já cadastrado.");
                 }
 
                 if (Regex.IsMatch(product.Price.ToString(), @"^\d+(\.\d+)?$"))
                 {
-                    throw new Exception("Preço invalido.");
+                    throw new ArgumentException("Preço invalido.");
                 }
-
+                var findShop = await _dbContext.Shop.SingleOrDefaultAsync(p => p.Id.Equals(product.ShopId));
+                if (findShop == null)
+                {
+                    throw new ArgumentException($"ShopId: {product.ShopId} não foi encontrada no banco de dados.");
+                }
                 var model = _mapper.Map<ProductModel>(product);
                 model.Status = "Criado";
                 model.CreateAt = DateTime.UtcNow;
@@ -57,11 +62,11 @@ namespace ApiEstoque.Repository
                 ProductModel productResult = await _dbContext.Products.SingleOrDefaultAsync(p => p.Id.Equals(id));
                 if (productResult == null)
                 {
-                    throw new Exception($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
+                    throw new ArgumentException($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
                 }
                 if (Regex.IsMatch(product.Price.ToString(), @"^\d+(\.\d+)?$"))
                 {
-                    throw new Exception("Preço invalido.");
+                    throw new ArgumentException("Preço invalido.");
                 }
                 productResult.Name = product.Name;
                 productResult.Description = product.Description;
@@ -89,7 +94,7 @@ namespace ApiEstoque.Repository
                 ProductModel result = await _dbContext.Products.SingleOrDefaultAsync(p => p.Id.Equals(id));
                 if (result == null)
                 {
-                    throw new Exception($"Cargo para o ID: {id} não foi encontrado no banco de dados.");
+                    throw new ArgumentException($"Cargo para o ID: {id} não foi encontrado no banco de dados.");
                 }
                 _dbContext.Products.Remove(result);
                 await _dbContext.SaveChangesAsync();

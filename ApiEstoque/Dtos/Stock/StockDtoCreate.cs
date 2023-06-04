@@ -13,5 +13,9 @@ namespace ApiEstoque.Dtos.Stock
 
         [Required(ErrorMessage = "Id do produto é um campo obrigatório.")]
         public int ProductId { get; set; }
+
+
+        [Required(ErrorMessage = "Id da loja é um campo obrigatório.")]
+        public int ShopId { get; set; }
     }
 }

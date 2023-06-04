@@ -7,5 +7,6 @@
         public int ProductId { get; set; }
         public int UserId { get; set; }
         public DateTime CreateAt { get; set; }
+        public int ShopId { get; set; }
     }
 }

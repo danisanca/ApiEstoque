@@ -21,5 +21,9 @@ namespace ApiEstoque.Dtos.Product
         [StringLength(12, ErrorMessage = "A unidade de medida deve ter no maximo {1} characters.")]
         [Required(ErrorMessage = "Unidade de medida é um campo obrigatório.")]
         public string UnitOfMeasure { get; set; }
+
+
+        [Required(ErrorMessage = "Id da loja é um campo obrigatório.")]
+        public int ShopId { get; set; }
     }
 }

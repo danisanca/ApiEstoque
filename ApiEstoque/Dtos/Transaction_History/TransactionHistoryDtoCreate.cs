@@ -13,5 +13,9 @@ namespace ApiEstoque.Dtos.Transaction_History
 
         [Required(ErrorMessage = "Id do usuario é um campo obrigatório.")]
         public int UserId { get; set; }
+
+
+        [Required(ErrorMessage = "Id da loja é um campo obrigatório.")]
+        public int ShopId { get; set; }
     }
 }

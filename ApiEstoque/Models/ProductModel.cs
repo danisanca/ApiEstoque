@@ -15,7 +15,9 @@
             set {_createAt = value == null ? DateTime.UtcNow:value ; }
         }
         public DateTime? UpdateAt { get; set; }
-
+        public int ShopId { get; set; }
+        public ShopModel Shop { get; set; }
         public IEnumerable<StockModel> Stock { get; set; }
+
     }
 }
