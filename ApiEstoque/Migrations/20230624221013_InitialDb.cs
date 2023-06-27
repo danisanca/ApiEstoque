@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiEstoque.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb12 : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -100,27 +100,6 @@ namespace ApiEstoque.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TransactionsHistory",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Reason = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false),
-                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ShopId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TransactionsHistory", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_TransactionsHistory_Shop_ShopId",
-                        column: x => x.ShopId,
-                        principalTable: "Shop",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Stock",
                 columns: table => new
                 {
@@ -146,6 +125,38 @@ namespace ApiEstoque.Migrations
                         name: "FK_Stock_Shop_ShopId",
                         column: x => x.ShopId,
                         principalTable: "Shop",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TransactionsHistory",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Reason = table.Column<string>(type: "nvarchar(45)", maxLength: 45, nullable: false),
+                    CreateAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ShopId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TransactionsHistory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_TransactionsHistory_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TransactionsHistory_Shop_ShopId",
+                        column: x => x.ShopId,
+                        principalTable: "Shop",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_TransactionsHistory_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id");
                 });
 
@@ -196,10 +207,19 @@ namespace ApiEstoque.Migrations
                 column: "ShopId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TransactionsHistory_ProductId",
+                table: "TransactionsHistory",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TransactionsHistory_ShopId",
                 table: "TransactionsHistory",
-                column: "ShopId",
-                unique: true);
+                column: "ShopId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TransactionsHistory_UserId",
+                table: "TransactionsHistory",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",

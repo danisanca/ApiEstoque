@@ -40,7 +40,7 @@ namespace ApiEstoque.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
-            
+
         }
 
         [Authorize("Bearer")]
@@ -61,7 +61,7 @@ namespace ApiEstoque.Controllers
             {
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
-           
+
         }
         [Authorize("Bearer")]
         [HttpGet]
@@ -89,7 +89,7 @@ namespace ApiEstoque.Controllers
 
         [Authorize("Bearer")]
         [HttpPut("Update/{id}")]
-        public async Task<ActionResult> Put([FromBody] UserDtoUpdate user,int id)
+        public async Task<ActionResult> Put([FromBody] UserDtoUpdate user, int id)
         {
             if (!ModelState.IsValid)
             {
@@ -104,9 +104,32 @@ namespace ApiEstoque.Controllers
                 }
                 else
                 {
-                    var result = await _userRepository.Update(user,id);
+                    var result = await _userRepository.Update(user, id);
                     return Ok(result);
                 }
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("FindEmail")]
+        public async Task<ActionResult<UserDto>> FindEmail(string email)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var result = await _userRepository.FindEmail(email);
+                if (result == null)
+                {
+                    return StatusCode((int)HttpStatusCode.NotFound, "Email não cadastrado.");
+                }
+                else return Ok(result);
             }
             catch (ArgumentException e)
             {
@@ -133,7 +156,7 @@ namespace ApiEstoque.Controllers
                 {
                     return Ok(await _userRepository.Delete(id));
                 }
-                    
+
             }
             catch (ArgumentException e)
             {

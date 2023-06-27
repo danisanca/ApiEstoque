@@ -67,5 +67,17 @@ namespace ApiEstoque.Repository
                 throw ex;
             }
         }
+        public async Task<ShopDto> GetByName(string name)
+        {
+            try
+            {
+                var shop = await _dbContext.Shop.FirstOrDefaultAsync(x => x.Name.ToUpper() == name.ToUpper());
+                return _mapper.Map<ShopDto>(shop);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

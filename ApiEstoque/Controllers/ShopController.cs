@@ -92,6 +92,28 @@ namespace ApiEstoque.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
+        [HttpGet]
+        [Route("GetByName")]
+        public async Task<ActionResult<ShopDto>> GetByName(string name)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                var result = await _shopRepository.GetByName(name);
+                if (result == null)
+                {
+                    return StatusCode((int)HttpStatusCode.NotFound, "Nome da loja não encontrado");
+                }
+                else return Ok(result);
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
 
 
     }

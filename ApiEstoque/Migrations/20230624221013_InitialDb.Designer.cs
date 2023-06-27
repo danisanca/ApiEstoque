@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiEstoque.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20230604143810_InitialDb12")]
-    partial class InitialDb12
+    [Migration("20230624221013_InitialDb")]
+    partial class InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -199,6 +199,9 @@ namespace ApiEstoque.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Reason")
                         .IsRequired()
                         .HasMaxLength(45)
@@ -207,10 +210,16 @@ namespace ApiEstoque.Migrations
                     b.Property<int>("ShopId")
                         .HasColumnType("int");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ShopId")
-                        .IsUnique();
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ShopId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("TransactionsHistory");
                 });
@@ -310,13 +319,29 @@ namespace ApiEstoque.Migrations
 
             modelBuilder.Entity("ApiEstoque.Models.TransactionHistoryModel", b =>
                 {
-                    b.HasOne("ApiEstoque.Models.ShopModel", "Shop")
-                        .WithOne("TransactionHistory")
-                        .HasForeignKey("ApiEstoque.Models.TransactionHistoryModel", "ShopId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("ApiEstoque.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("ApiEstoque.Models.ShopModel", "Shop")
+                        .WithMany()
+                        .HasForeignKey("ShopId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("ApiEstoque.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
                     b.Navigation("Shop");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ApiEstoque.Models.ProductModel", b =>
@@ -327,9 +352,6 @@ namespace ApiEstoque.Migrations
             modelBuilder.Entity("ApiEstoque.Models.ShopModel", b =>
                 {
                     b.Navigation("Product")
-                        .IsRequired();
-
-                    b.Navigation("TransactionHistory")
                         .IsRequired();
                 });
 

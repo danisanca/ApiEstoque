@@ -28,7 +28,7 @@ namespace ApiEstoque
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            //Configuração Mapeamento.
+            //Configuraï¿½ï¿½o Mapeamento.
             var config = new AutoMapper.MapperConfiguration(cfg =>
             {
                 cfg.AddProfile(new DtoToModelProfile());
@@ -36,12 +36,14 @@ namespace ApiEstoque
             IMapper mapper = config.CreateMapper();
             builder.Services.AddSingleton(mapper);
 
-            //Configuração do banco.
-            builder.Services.AddEntityFrameworkSqlServer()
-                .AddDbContext<ApiContext>(
-                    options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
+            //Configuraï¿½ï¿½o do banco.
+
+            builder.Services.AddDbContext<ApiContext>(
+                   options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataBase"))
                 );
-            //Configuração da injeção de dependencia.
+
+
+            //Configuraï¿½ï¿½o da injeï¿½ï¿½o de dependencia.
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<ILoginRepository, LoginRepository>();
             builder.Services.AddScoped<IOfficeRepository, OfficeRepository>();
@@ -50,7 +52,7 @@ namespace ApiEstoque
             builder.Services.AddScoped<IShopRepository, ShopRepository>();
             builder.Services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
 
-            //Configurações do Token
+            //Configuraï¿½ï¿½es do Token
             var signingConfigurations = new SigningConfigurations();
             builder.Services.AddSingleton(signingConfigurations);
 
@@ -64,8 +66,8 @@ namespace ApiEstoque
             {
                 var paramsValidation = bearerOptions.TokenValidationParameters;
                 paramsValidation.IssuerSigningKey = signingConfigurations.Key;
-                paramsValidation.ValidAudience = configuration["Audience"]; 
-                paramsValidation.ValidIssuer = configuration["Issuer"]; 
+                paramsValidation.ValidAudience = configuration["Audience"];
+                paramsValidation.ValidIssuer = configuration["Issuer"];
                 paramsValidation.ValidateLifetime = true;
                 paramsValidation.ClockSkew = TimeSpan.Zero;
             });
@@ -97,15 +99,24 @@ namespace ApiEstoque
                     }
                 });
             });
-
-                var app = builder.Build();
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+            });
+            var app = builder.Build();
+            app.UseCors();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
 
             app.UseHttpsRedirection();
 

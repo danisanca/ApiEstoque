@@ -8,6 +8,7 @@ namespace ApiEstoque.Repository.interfaces
         Task<List<UserDto>> GetAll();
         Task<UserDto> GetById(int id);
         Task<UserModel> GetByEmail(string email);
+        Task<UserDto> FindEmail(string email);
         Task<UserDto> Create(UserDtoCreate user);
         Task<UserDto> Update(UserDtoUpdate user, int id);
         Task<bool> Delete(int id);

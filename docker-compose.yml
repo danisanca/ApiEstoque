@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  apiestoque:
+    image: ${DOCKER_REGISTRY-}apiestoque
+    build:
+      context: .
+      dockerfile: ApiEstoque/Dockerfile

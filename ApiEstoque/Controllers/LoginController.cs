@@ -31,13 +31,13 @@ namespace ApiEstoque.Controllers
             try
             {
                 var result = await _loginRepository.Login(user);
-                
+
                 if (result != null)
                 {
                     dynamic jsonResult = JsonConvert.DeserializeObject(System.Text.Json.JsonSerializer.Serialize(result));
                     if (jsonResult.authenticated == false)
                     {
-                        return BadRequest(result);
+                        return StatusCode((int)HttpStatusCode.Unauthorized, "Email e/ou Senha inválida.");
                     }
                     return Ok(result);
                 }
@@ -48,6 +48,7 @@ namespace ApiEstoque.Controllers
             }
             catch (ArgumentException e)
             {
+                //alterar o retorno da msg
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }

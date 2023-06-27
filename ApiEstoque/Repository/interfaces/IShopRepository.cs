@@ -7,6 +7,7 @@ namespace ApiEstoque.Repository.interfaces
     {
         Task<ShopDto> Create(ShopDtoCreate shop);
         Task<ShopDto> GetById(int id);
+        Task<ShopDto> GetByName(string name);
         Task<List<ShopDto>> GetAll();
     }
 }

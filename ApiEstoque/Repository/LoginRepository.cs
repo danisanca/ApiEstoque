@@ -35,7 +35,6 @@ namespace ApiEstoque.Repository
 
             if (user != null && !string.IsNullOrWhiteSpace(user.Email) && !string.IsNullOrWhiteSpace(user.Password))
             {
-
                 baseUser = _mapper.Map<UserModel>(await _userRepository.GetByEmail(user.Email));
 
                 if (baseUser != null)
@@ -92,7 +91,7 @@ namespace ApiEstoque.Repository
                 Subject = identity,
                 NotBefore = createDate,
                 Expires = expirationDate,
-            }) ;
+            });
             var token = handler.WriteToken(securityToken);
             return token;
         }

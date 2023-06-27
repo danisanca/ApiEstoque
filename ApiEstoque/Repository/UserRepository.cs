@@ -50,7 +50,7 @@ namespace ApiEstoque.Repository
             {
                 throw ex;
             }
-            
+
         }
 
         public async Task<List<UserDto>> GetAll()
@@ -64,7 +64,7 @@ namespace ApiEstoque.Repository
             {
                 throw ex;
             }
-            
+
         }
 
         public async Task<UserModel> GetByEmail(string email)
@@ -79,6 +79,19 @@ namespace ApiEstoque.Repository
                 throw ex;
             }
         }
+        public async Task<UserDto> FindEmail(string email)
+        {
+            try
+            {
+                var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+                return _mapper.Map<UserDto>(user); ;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
 
         public async Task<UserDto> GetById(int id)
         {
@@ -91,7 +104,7 @@ namespace ApiEstoque.Repository
             {
                 throw ex;
             }
-           
+
         }
 
         public async Task<UserDto> Update(UserDtoUpdate user, int id)
@@ -121,7 +134,7 @@ namespace ApiEstoque.Repository
                 throw ex;
             }
 
-            
+
         }
     }
 }
