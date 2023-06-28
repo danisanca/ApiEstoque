@@ -1,6 +1,8 @@
 ﻿using ApiEstoque.Data;
+using ApiEstoque.Dtos.Shop;
 using ApiEstoque.Dtos.User;
 using ApiEstoque.Models;
+using ApiEstoque.Repository.Exceptions;
 using ApiEstoque.Repository.interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -11,18 +13,24 @@ namespace ApiEstoque.Repository
     {
         protected readonly ApiContext _dbContext;
         private readonly IMapper _mapper;
-
-        public UserRepository(ApiContext dbContext, IMapper mapper)
+        private IShopRepository _shopRepository;
+        public UserRepository(ApiContext dbContext, IMapper mapper, IShopRepository shopRepository)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _shopRepository = shopRepository;
         }
         public async Task<UserDto> Create(UserDtoCreate user)
         {
             UserModel findEmail = await _dbContext.Users.SingleOrDefaultAsync(p => p.Email.Equals(user.Email));
+            ShopModel shopName = await _dbContext.Shop.SingleOrDefaultAsync(p => p.Name.Equals(user.storeName));
             if (findEmail != null)
             {
-                throw new ArgumentException($"Email:{user.Email} já cadastrado.");
+                throw new CreateUserException(404, $"Email:{user.Email} já cadastrado.");
+            }
+            if (shopName != null)
+            {
+                throw new CreateUserException(404, $"Shop:{user.storeName} já cadastrado.");
             }
             var model = _mapper.Map<UserModel>(user);
             model.Status = "Active";
@@ -30,6 +38,12 @@ namespace ApiEstoque.Repository
             model.SetPasswordHash();
             await _dbContext.Users.AddAsync(model);
             await _dbContext.SaveChangesAsync();
+
+            //Model Shop
+            var modelShop = new ShopDtoCreate();
+            modelShop.Name = user.storeName;
+            modelShop.UserId = model.Id;
+            await _shopRepository.Create(modelShop);
             return _mapper.Map<UserDto>(model);
         }
 

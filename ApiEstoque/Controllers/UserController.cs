@@ -1,6 +1,7 @@
 ﻿using ApiEstoque.Attributes;
 using ApiEstoque.Dtos.User;
 using ApiEstoque.Models;
+using ApiEstoque.Repository.Exceptions;
 using ApiEstoque.Repository.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
@@ -36,8 +37,12 @@ namespace ApiEstoque.Controllers
                 UserDto user = await _userRepository.Create(userDtoCreate);
                 return Ok(user);
             }
-            catch (ArgumentException e)
+            catch (CreateUserException e)
             {
+                if (e.StatusCode == 404)
+                {
+                    return StatusCode((int)HttpStatusCode.Conflict, e.Message);
+                }
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
 

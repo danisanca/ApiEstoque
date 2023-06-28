@@ -32,7 +32,7 @@ namespace ApiEstoque.Repository
                 var model = _mapper.Map<ShopModel>(shop);
                 model.Status = "Criado";
                 model.CreateAt = DateTime.UtcNow;
-                _dbContext.Shop.AddAsync(model);
+                await _dbContext.Shop.AddAsync(model);
                 await _dbContext.SaveChangesAsync();
                 return _mapper.Map<ShopDto>(model);
             }
