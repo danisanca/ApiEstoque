@@ -14,15 +14,6 @@ namespace ApiEstoque.Data.Mapping
             builder.Property(x => x.Status).IsRequired().HasMaxLength(24);
             builder.HasIndex(u => u.Barcode)
            .IsUnique();
-            builder.HasOne(u => u.Shop)
-                .WithMany()
-                .HasForeignKey(u => u.ShopId)
-                .OnDelete(DeleteBehavior.NoAction) ;
-
-            builder.HasOne(s => s.Product)
-            .WithMany(p => p.Stock)
-            .HasForeignKey(s => s.ProductId)
-            .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

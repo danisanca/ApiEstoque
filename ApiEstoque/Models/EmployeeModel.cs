@@ -1,10 +1,15 @@
 ﻿namespace ApiEstoque.Models
 {
-    public class ShopModel
+    public class EmployeeModel
     {
         public int Id { get; set; }
-        public string Name { get; set; }
         public string Status { get; set; }
+        public int UserId { get; set; }
+        public UserModel User { get; set; }
+        public int ShopId { get; set; }
+        public ShopModel Shop { get; set; }
+        public int OfficeId { get; set; }
+        public OfficeModel Office { get; set; }
         private DateTime _createAt;
         public DateTime CreateAt
         {
@@ -14,10 +19,5 @@
                 _createAt = value == null ? DateTime.UtcNow : value;
             }
         }
-        public int UserId { get; set; }
-        public UserModel User { get; set; }
-        public IEnumerable<EmployeeModel> Employee { get; set; }
-        public IEnumerable<ProductModel> Product { get; set; }
-        public IEnumerable<StockModel> Stock { get; set; }
     }
 }

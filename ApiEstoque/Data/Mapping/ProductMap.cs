@@ -17,7 +17,6 @@ namespace ApiEstoque.Data.Mapping
             builder.Property(x => x.Status).IsRequired().HasMaxLength(24);
             builder.HasIndex(u => u.ProductCode)
             .IsUnique();
-            builder.HasOne(u => u.Shop);
         }
     }
 }

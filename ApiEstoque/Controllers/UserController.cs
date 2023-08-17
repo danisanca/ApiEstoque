@@ -26,7 +26,7 @@ namespace ApiEstoque.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public async Task<ActionResult<UserDto>> Cadastrar([FromBody] UserDtoCreate userDtoCreate)
+        public async Task<ActionResult<UserDto>> Cadastrar([FromBody] UserAdmDtoCreate userDtoCreate)
         {
             if (!ModelState.IsValid)
             {
@@ -34,10 +34,33 @@ namespace ApiEstoque.Controllers
             }
             try
             {
-                UserDto user = await _userRepository.Create(userDtoCreate);
+                UserDto user = await _userRepository.CreateAdm(userDtoCreate);
                 return Ok(user);
             }
-            catch (CreateUserException e)
+            catch (FailureRequestException e)
+            {
+                if (e.StatusCode == 404)
+                {
+                    return StatusCode((int)HttpStatusCode.Conflict, e.Message);
+                }
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+
+        }
+        [HttpPost]
+        [Route("CreateFuncionario")]
+        public async Task<ActionResult<UserDto>> CadastrarFuncionario([FromBody] UserPadraoDtoCreate userDtoCreate)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            try
+            {
+                UserDto user = await _userRepository.CreatePadrao(userDtoCreate);
+                return Ok(user);
+            }
+            catch (FailureRequestException e)
             {
                 if (e.StatusCode == 404)
                 {
@@ -82,7 +105,7 @@ namespace ApiEstoque.Controllers
                 var result = await _userRepository.GetById(id);
                 if (result == null)
                 {
-                    return NotFound();
+                    return NotFound($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
                 }
                 else return Ok(result);
             }
@@ -105,7 +128,7 @@ namespace ApiEstoque.Controllers
                 var findUser = await _userRepository.GetById(id);
                 if (findUser == null)
                 {
-                    return NotFound();
+                    return NotFound($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
                 }
                 else
                 {
@@ -138,7 +161,7 @@ namespace ApiEstoque.Controllers
             }
             catch (ArgumentException e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Houve uma falha na requisição");
             }
         }
 
@@ -165,7 +188,7 @@ namespace ApiEstoque.Controllers
             }
             catch (ArgumentException e)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, "Houve uma falha na requisição");
             }
         }
     }

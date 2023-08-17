@@ -1,4 +1,5 @@
-﻿using ApiEstoque.Dtos.Office;
+﻿using ApiEstoque.Dtos.Employee;
+using ApiEstoque.Dtos.Office;
 using ApiEstoque.Dtos.Product;
 using ApiEstoque.Dtos.Shop;
 using ApiEstoque.Dtos.Stock;
@@ -16,8 +17,10 @@ namespace ApiEstoque.Mapping
             #region User
             CreateMap<UserModel, UserDto>()
                     .ReverseMap();
-            CreateMap<UserModel, UserDtoCreate>()
+            CreateMap<UserModel, UserAdmDtoCreate>()
                     .ReverseMap();
+            CreateMap<UserModel, UserPadraoDtoCreate>()
+                   .ReverseMap();
             CreateMap<UserModel, UserDtoUpdate>()
                     .ReverseMap();
             #endregion
@@ -58,6 +61,12 @@ namespace ApiEstoque.Mapping
                     .ReverseMap();
             CreateMap<ShopModel, ShopDtoCreate>()
                     .ReverseMap();
+            #endregion
+
+            #region TEmployee
+            CreateMap<EmployeeModel, EmployeeDtoCreate>()
+                    .ReverseMap();
+           
             #endregion
 
         }

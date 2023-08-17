@@ -13,7 +13,8 @@
                 _createAt = value == null ? DateTime.UtcNow : value;
             }
         }
-        public int UserId { get; set; }
-        public UserModel User { get; set; }
+        public int ShopId { get; set; }
+        public ShopModel Shop { get; set; }
+        public EmployeeModel Employee { get; set; }
     }
 }

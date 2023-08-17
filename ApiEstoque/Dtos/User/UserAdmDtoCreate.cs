@@ -2,7 +2,7 @@
 
 namespace ApiEstoque.Dtos.User
 {
-    public class UserDtoCreate
+    public class UserAdmDtoCreate
     {
         [StringLength(45, ErrorMessage = "Nome deve ter no maximo {1} characters.")]
         [Required(ErrorMessage = "Nome é um campo obrigatório.")]
@@ -18,7 +18,7 @@ namespace ApiEstoque.Dtos.User
         public string Password { get; set; }
 
         [StringLength(45, ErrorMessage = "Nome deve ter no maximo {1} characters.")]
-        [Required(ErrorMessage = "Nome é um campo obrigatório.")]
+        [Required(ErrorMessage = "Nome da loja é um campo obrigatório.")]
         public string storeName { get; set; }
     }
 }

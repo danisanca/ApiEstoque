@@ -14,14 +14,18 @@ namespace ApiEstoque.Repository
 {
     public class LoginRepository : ILoginRepository
     {
+    
         private IUserRepository _userRepository;
+        private IEmployeeRepository _employeeRepository;
         private readonly IMapper _mapper;
         private SigningConfigurations _signingConfigurations;
         private IConfiguration _configuration { get; }
 
         public LoginRepository(IUserRepository userRepository, IMapper mapper, SigningConfigurations signingConfigurations,
-                            IConfiguration configuration)
+                            IConfiguration configuration,IEmployeeRepository employeeRepository)
         {
+
+            _employeeRepository = employeeRepository;
             _userRepository = userRepository;
             _mapper = mapper;
             _signingConfigurations = signingConfigurations;
@@ -36,9 +40,11 @@ namespace ApiEstoque.Repository
             if (user != null && !string.IsNullOrWhiteSpace(user.Email) && !string.IsNullOrWhiteSpace(user.Password))
             {
                 baseUser = _mapper.Map<UserModel>(await _userRepository.GetByEmail(user.Email));
+                
 
                 if (baseUser != null)
                 {
+                    EmployeeModel employeeShop = await _employeeRepository.GetByIdUser(baseUser.Id);
                     user.SetPasswordHash();
                     if (baseUser.Password == user.Password)
                     {
@@ -53,7 +59,7 @@ namespace ApiEstoque.Repository
                         DateTime expirationDate = createDate + TimeSpan.FromSeconds(Convert.ToInt32(_configuration["Seconds"]));
                         var handler = new JwtSecurityTokenHandler();
                         string token = CreateToken(identity, createDate, expirationDate, handler);
-                        return SuccessObject(createDate, expirationDate, token, user);
+                        return SuccessObject(createDate, expirationDate, token, user, employeeShop.ShopId);
                     }
                     else
                     {
@@ -96,7 +102,7 @@ namespace ApiEstoque.Repository
             return token;
         }
 
-        private object SuccessObject(DateTime createDate, DateTime expirationDate, string token, LoginDto user)
+        private object SuccessObject(DateTime createDate, DateTime expirationDate, string token, LoginDto user,int shopId)
         {
             return new
             {
@@ -105,6 +111,7 @@ namespace ApiEstoque.Repository
                 expiration = expirationDate.ToString("yyyy-MM-dd HH:mm:ss"),
                 acessToken = token,
                 userName = user.Email,
+                shopId = shopId,
                 message = "Usuário logado com sucesso."
             };
         }

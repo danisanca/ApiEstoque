@@ -1,6 +1,7 @@
 ﻿using ApiEstoque.Dtos.Office;
 using ApiEstoque.Dtos.Product;
 using ApiEstoque.Dtos.Stock;
+using ApiEstoque.Models;
 using ApiEstoque.Repository.interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,13 +19,16 @@ namespace ApiEstoque.Controllers
         private readonly IOfficeRepository _officeRepository;
         private readonly IUserRepository _userRepository;
         private readonly IStockRepository _stockRepository;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public StockController(IStockRepository stockRepository, IProductsRepository productsRepository, IOfficeRepository officeRepository, IUserRepository userRepository)
+        public StockController(IStockRepository stockRepository, IProductsRepository productsRepository, IOfficeRepository officeRepository, IUserRepository userRepository, IEmployeeRepository employeeRepository)
         {
             _productsRepository = productsRepository;
             _officeRepository = officeRepository;
             _userRepository = userRepository;
             _stockRepository = stockRepository;
+            _employeeRepository = employeeRepository;
+
         }
 
         [Authorize("Bearer")]
@@ -39,7 +43,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employeeResult = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employeeResult.OfficeId);
                 if (officeUserLogged.Name == "Estoquista" || officeUserLogged.Name == "Propietario")
                 {
                     StockDto productDto = await _stockRepository.Create(stockDtoCreate);
@@ -71,7 +76,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employeeResult = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employeeResult.OfficeId);
                 if (officeUserLogged.Name == "Estoquista" || officeUserLogged.Name == "Propietario")
                 {
                     var findUser = await _userRepository.GetById(id);
@@ -110,7 +116,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employeeResult = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employeeResult.OfficeId);
                 if (officeUserLogged.Name == "Estoquista" || officeUserLogged.Name == "Propietario")
                 {
                     var findUser = await _productsRepository.GetById(id);
@@ -148,7 +155,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employeeResult = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employeeResult.OfficeId);
                 if (officeUserLogged.Name == "Estoquista" || officeUserLogged.Name == "Propietario")
                 {
                     List<StockDto> products = await _stockRepository.GetAll();
@@ -180,7 +188,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employeeResult = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employeeResult.OfficeId);
                 if (officeUserLogged.Name == "Estoquista" || officeUserLogged.Name == "Propietario")
                 {
                     var result = await _stockRepository.GetById(id);
@@ -215,7 +224,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employeeResult = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employeeResult.OfficeId);
                 if (officeUserLogged.Name == "Estoquista" || officeUserLogged.Name == "Propietario")
                 {
                     var result = await _stockRepository.GetProductStockByBarcode(barcode);

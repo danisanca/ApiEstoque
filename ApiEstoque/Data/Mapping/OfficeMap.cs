@@ -12,7 +12,6 @@ namespace ApiEstoque.Data.Mapping
             builder.Property(x => x.Name).IsRequired().HasMaxLength(45);
             builder.HasIndex(u => u.Name)
             .IsUnique();
-            builder.HasOne(x => x.User);
         }
     }
 }

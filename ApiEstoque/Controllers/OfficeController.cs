@@ -1,5 +1,7 @@
 ﻿using ApiEstoque.Dtos.Office;
+using ApiEstoque.Dtos.Shop;
 using ApiEstoque.Dtos.User;
+using ApiEstoque.Models;
 using ApiEstoque.Repository;
 using ApiEstoque.Repository.interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -16,13 +18,17 @@ namespace ApiEstoque.Controllers
     {
 
         private readonly IOfficeRepository _officeRepository;
+        private readonly IShopRepository _shopRepository;
+        private readonly IEmployeeRepository _employeeRepository;
         private readonly IUserRepository _userRepository;
         private IConfiguration _configuration { get; }
-        public OfficeController(IOfficeRepository officeRepository, IUserRepository userRepository, IConfiguration configuration)
+        public OfficeController(IEmployeeRepository employeeRepository,IOfficeRepository officeRepository, IUserRepository userRepository, IConfiguration configuration, IShopRepository shopRepository)
         {
+            _employeeRepository = employeeRepository;
             _officeRepository = officeRepository;
             _userRepository = userRepository;
             _configuration = configuration;
+            _shopRepository = shopRepository;
         }
 
         [Authorize("Bearer")]
@@ -38,11 +44,11 @@ namespace ApiEstoque.Controllers
             {
                 var token = _configuration["TokenAdmin"];
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                UserDto user = await _userRepository.GetById(officeDtoCreate.UserId);
+                ShopDto shop = await _shopRepository.GetById(officeDtoCreate.ShopId);
                 
-                if (user != null)
+                if (shop != null)
                 {
-                 OfficeDto FindOffice = await _officeRepository.GetByUserId(officeDtoCreate.UserId);
+                 OfficeDto FindOffice = await _officeRepository.GetByNameByShop(officeDtoCreate.Name,officeDtoCreate.ShopId);
 
                     if (tokenAdmin != null)
                     {
@@ -66,7 +72,8 @@ namespace ApiEstoque.Controllers
                     }
                     else
                     {
-                        OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                        EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                        OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
 
                         if (officeUserLogged.Name == "Propietario")
                         {
@@ -84,7 +91,7 @@ namespace ApiEstoque.Controllers
                 }
                 else
                 {
-                    return NotFound($"Usuario id: {officeDtoCreate.UserId} não encontrado.");
+                    return NotFound($"Shop id: {officeDtoCreate.ShopId} não encontrado.");
                 }
 
 
@@ -108,11 +115,12 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
 
                 if (officeUserLogged.Name == "Propietario")
                 {
-                    List<OfficeDto> offices = await _officeRepository.GetAll();
+                    List<OfficeDto> offices = await _officeRepository.GetAllByShop(employee.ShopId);
                     return Ok(offices);
                 }
                 else
@@ -139,7 +147,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
 
                 if (officeUserLogged.Name == "Propietario")
                 {
@@ -173,7 +182,8 @@ namespace ApiEstoque.Controllers
             try
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                OfficeDto officeUserLogged = await _officeRepository.GetByUserId(int.Parse(userLogged));
+                EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
+                OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
 
                 if (officeUserLogged.Name == "Propietario")
                 {

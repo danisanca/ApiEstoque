@@ -16,6 +16,7 @@ namespace ApiEstoque.Data
         public DbSet<ProductModel> Products { get; set; }
         public DbSet<StockModel> Stock { get; set; }
         public DbSet<ShopModel> Shop { get; set; }
+        public DbSet<EmployeeModel> Employee { get; set; }
         public DbSet<TransactionHistoryModel> TransactionsHistory { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,6 +26,7 @@ namespace ApiEstoque.Data
             modelBuilder.ApplyConfiguration(new ProductMap());
             modelBuilder.ApplyConfiguration(new StockMap());
             modelBuilder.ApplyConfiguration(new ShopMap());
+            modelBuilder.ApplyConfiguration(new EmployeeMap());
             modelBuilder.ApplyConfiguration(new TransactionHistoryMap());
             base.OnModelCreating(modelBuilder);
         }

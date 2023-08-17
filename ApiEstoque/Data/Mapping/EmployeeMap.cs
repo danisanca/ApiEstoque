@@ -4,14 +4,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ApiEstoque.Data.Mapping
 {
-    public class ShopMap : IEntityTypeConfiguration<ShopModel>
+    public class EmployeeMap : IEntityTypeConfiguration<EmployeeModel>
     {
-        public void Configure(EntityTypeBuilder<ShopModel> builder)
+        public void Configure(EntityTypeBuilder<EmployeeModel> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.Property(x => x.Name).IsRequired().HasMaxLength(45);
             builder.Property(x => x.Status);
+
         }
     }
-    }
-
+}

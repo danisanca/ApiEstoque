@@ -9,6 +9,7 @@ namespace ApiEstoque.Models
         public string Email { get; set; }
         public string Password { get; set; }
         public string Status { get; set; }
+        public EmployeeModel Employee { get; set; }
 
         private DateTime _createAt;
         public DateTime CreateAt 
@@ -19,8 +20,6 @@ namespace ApiEstoque.Models
             } 
         }
         public DateTime? UpdateAt { get; set; }
-        public OfficeModel Office { get; set; }
-        public ShopModel Shop { get; set; }
 
         public void SetPasswordHash()
         {

@@ -8,7 +8,7 @@ namespace ApiEstoque.Dtos.Office
         [Required(ErrorMessage = "Nome é um campo obrigatório.")]
         public string Name { get; set; }
 
-        [Required(ErrorMessage = "Id do usuario é um campo obrigatório.")]
-        public int UserId { get; set; }
+        [Required(ErrorMessage = "Id do shop é um campo obrigatório.")]
+        public int ShopId { get; set; }
     }
 }

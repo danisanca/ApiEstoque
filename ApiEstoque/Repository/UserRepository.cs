@@ -1,4 +1,6 @@
 ﻿using ApiEstoque.Data;
+using ApiEstoque.Dtos.Employee;
+using ApiEstoque.Dtos.Office;
 using ApiEstoque.Dtos.Shop;
 using ApiEstoque.Dtos.User;
 using ApiEstoque.Models;
@@ -6,6 +8,7 @@ using ApiEstoque.Repository.Exceptions;
 using ApiEstoque.Repository.interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.ConstrainedExecution;
 
 namespace ApiEstoque.Repository
 {
@@ -14,23 +17,27 @@ namespace ApiEstoque.Repository
         protected readonly ApiContext _dbContext;
         private readonly IMapper _mapper;
         private IShopRepository _shopRepository;
-        public UserRepository(ApiContext dbContext, IMapper mapper, IShopRepository shopRepository)
+        private IEmployeeRepository _employeeRepository;
+        private IOfficeRepository _officeRepository;
+        public UserRepository(ApiContext dbContext, IMapper mapper, IShopRepository shopRepository, IEmployeeRepository employeeRepository, IOfficeRepository officeRepository)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _shopRepository = shopRepository;
+            _employeeRepository = employeeRepository;
+            _officeRepository = officeRepository;
         }
-        public async Task<UserDto> Create(UserDtoCreate user)
+        public async Task<UserDto> CreateAdm(UserAdmDtoCreate user)
         {
-            UserModel findEmail = await _dbContext.Users.SingleOrDefaultAsync(p => p.Email.Equals(user.Email));
-            ShopModel shopName = await _dbContext.Shop.SingleOrDefaultAsync(p => p.Name.Equals(user.storeName));
+            UserModel findEmail = await _dbContext.Users.FirstOrDefaultAsync(p => p.Email.Equals(user.Email));
+            ShopModel shopName = await _dbContext.Shop.FirstOrDefaultAsync(p => p.Name.Equals(user.storeName));
             if (findEmail != null)
             {
-                throw new CreateUserException(404, $"Email:{user.Email} já cadastrado.");
+                throw new FailureRequestException(404, $"Email:{user.Email} já cadastrado.");
             }
             if (shopName != null)
             {
-                throw new CreateUserException(404, $"Shop:{user.storeName} já cadastrado.");
+                throw new FailureRequestException(404, $"Shop:{user.storeName} já cadastrado.");
             }
             var model = _mapper.Map<UserModel>(user);
             model.Status = "Active";
@@ -43,7 +50,52 @@ namespace ApiEstoque.Repository
             var modelShop = new ShopDtoCreate();
             modelShop.Name = user.storeName;
             modelShop.UserId = model.Id;
-            await _shopRepository.Create(modelShop);
+            ShopModel shop = _mapper.Map<ShopModel>(await _shopRepository.Create(modelShop));
+
+            //Office
+            var modelOffice = new OfficeDtoCreate();
+            modelOffice.Name = "Propietario";
+            modelOffice.ShopId = shop.Id;
+            OfficeModel office = _mapper.Map<OfficeModel>(await _officeRepository.Create(modelOffice));
+
+            //Model Employee
+            var modelemployee = new EmployeeDtoCreate();
+            modelemployee.ShopId = shop.Id;
+            modelemployee.UserId = model.Id;
+            modelemployee.OfficeId = office.Id;
+            await _employeeRepository.Create(modelemployee);
+            return _mapper.Map<UserDto>(model);
+        }
+        public async Task<UserDto> CreatePadrao(UserPadraoDtoCreate user)
+        {
+            UserModel findEmail = await _dbContext.Users.SingleOrDefaultAsync(u => u.Email.Equals(user.Email));
+            ShopModel shopName = await _dbContext.Shop.SingleOrDefaultAsync(s => s.Id.Equals(user.ShopId));
+            OfficeModel office = await _dbContext.Offices.SingleOrDefaultAsync(e => e.Id.Equals(user.OfficeId));
+            if (findEmail != null)
+            {
+                throw new FailureRequestException(404, $"Email:{user.Email} já cadastrado.");
+            }
+            if (shopName != null)
+            {
+                throw new FailureRequestException(404, $"Shop:{user.ShopId} já cadastrado.");
+            }
+            if (office != null)
+            {
+                throw new FailureRequestException(404, $"Office:{user.OfficeId} já cadastrado.");
+            }
+            var model = _mapper.Map<UserModel>(user);
+            model.Status = "Active";
+            model.CreateAt = DateTime.UtcNow;
+            model.SetPasswordHash();
+            await _dbContext.Users.AddAsync(model);
+            await _dbContext.SaveChangesAsync();
+
+
+            var modelemployee = new EmployeeDtoCreate();
+            modelemployee.ShopId = user.ShopId;
+            modelemployee.UserId = model.Id;
+            modelemployee.OfficeId = user.OfficeId;
+            await _employeeRepository.Create(modelemployee);
             return _mapper.Map<UserDto>(model);
         }
 
@@ -54,7 +106,7 @@ namespace ApiEstoque.Repository
                 UserModel user = await _dbContext.Users.SingleOrDefaultAsync(p => p.Id.Equals(id));
                 if (user == null)
                 {
-                    throw new ArgumentException($"Usuario para o ID: {id} não foi encontrado no banco de dados.");
+                    throw new FailureRequestException(404, $"Usuario para o ID: {id} não foi encontrado no banco de dados.");
                 }
                 _dbContext.Users.Remove(user);
                 await _dbContext.SaveChangesAsync();

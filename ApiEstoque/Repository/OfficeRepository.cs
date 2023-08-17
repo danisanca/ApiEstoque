@@ -23,7 +23,7 @@ namespace ApiEstoque.Repository
         {
             try
             {
-                OfficeModel findOffice = _mapper.Map<OfficeModel>(await GetByUserId(office.UserId));
+                OfficeModel findOffice = _mapper.Map<OfficeModel>(await GetByNameByShop(office.Name,office.ShopId));
                 if (findOffice == null)
                 {
                     var model = _mapper.Map<OfficeModel>(office);
@@ -34,7 +34,15 @@ namespace ApiEstoque.Repository
                 }
                 else
                 {
-                    throw new ArgumentException($"Ja existe um office com o nome: {office.Name} cadastrado o usuario: {office.UserId}.");
+                    if (office.Name.ToLower() != findOffice.Name.ToLower())
+                    {
+                        var model = _mapper.Map<OfficeModel>(office);
+                        model.CreateAt = DateTime.UtcNow;
+                        await _dbContext.Offices.AddAsync(model);
+                        await _dbContext.SaveChangesAsync();
+                        return _mapper.Map<OfficeDto>(model);
+                    }
+                    throw new ArgumentException($"Ja existe um office com o nome: {office.Name} cadastrado o usuario: {office.ShopId}.");
                 }
             }
             catch (Exception ex)
@@ -63,11 +71,11 @@ namespace ApiEstoque.Repository
             }
         }
 
-        public async Task<List<OfficeDto>> GetAll()
+        public async Task<List<OfficeDto>> GetAllByShop(int idShop)
         {
             try
             {
-                var listOffice = await _dbContext.Offices.ToListAsync();
+                var listOffice = await _dbContext.Offices.Where(x => x.ShopId == idShop).ToListAsync();
                 return _mapper.Map<List<OfficeDto>>(listOffice);
             }
             catch (Exception ex)
@@ -89,11 +97,11 @@ namespace ApiEstoque.Repository
             }
         }
 
-        public async Task<OfficeDto> GetByName(string name)
+        public async Task<OfficeDto> GetByNameByShop(string name,int idShop)
         {
             try
             {
-                var office = await _dbContext.Offices.FirstOrDefaultAsync(x => x.Name == name);
+                var office = await _dbContext.Offices.FirstOrDefaultAsync(x => x.Name == name && x.ShopId == idShop);
                 return _mapper.Map<OfficeDto>(office);
             }
             catch (Exception ex)
@@ -102,17 +110,5 @@ namespace ApiEstoque.Repository
             }
         }
 
-        public async Task<OfficeDto> GetByUserId(int id)
-        {
-            try
-            {
-                var office = await _dbContext.Offices.FirstOrDefaultAsync(x => x.UserId == id);
-                return _mapper.Map<OfficeDto>(office);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
     }
 }

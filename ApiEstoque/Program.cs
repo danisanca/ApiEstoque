@@ -50,6 +50,7 @@ namespace ApiEstoque
             builder.Services.AddScoped<IProductsRepository, ProductsRepository>();
             builder.Services.AddScoped<IStockRepository, StockRepository>();
             builder.Services.AddScoped<IShopRepository, ShopRepository>();
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
             builder.Services.AddScoped<ITransactionHistoryRepository, TransactionHistoryRepository>();
 
             //Configura��es do Token
