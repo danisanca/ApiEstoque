@@ -73,7 +73,7 @@ namespace ApiEstoque.Controllers
                     else
                     {
                         EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
-                        OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
+                        OfficeDto officeUserLogged = null;
 
                         if (officeUserLogged.Name == "Propietario")
                         {
@@ -116,7 +116,7 @@ namespace ApiEstoque.Controllers
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
-                OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
+                OfficeDto officeUserLogged = null;
 
                 if (officeUserLogged.Name == "Propietario")
                 {
@@ -148,7 +148,7 @@ namespace ApiEstoque.Controllers
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
-                OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
+                OfficeDto officeUserLogged = null;
 
                 if (officeUserLogged.Name == "Propietario")
                 {
@@ -183,7 +183,7 @@ namespace ApiEstoque.Controllers
             {
                 var userLogged = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 EmployeeModel employee = await _employeeRepository.GetByIdUser(int.Parse(userLogged));
-                OfficeDto officeUserLogged = await _officeRepository.GetById(employee.OfficeId);
+                OfficeDto officeUserLogged = null;
 
                 if (officeUserLogged.Name == "Propietario")
                 {

@@ -8,8 +8,6 @@
         public UserModel User { get; set; }
         public int ShopId { get; set; }
         public ShopModel Shop { get; set; }
-        public int OfficeId { get; set; }
-        public OfficeModel Office { get; set; }
         private DateTime _createAt;
         public DateTime CreateAt
         {

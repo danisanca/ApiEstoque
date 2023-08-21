@@ -33,9 +33,6 @@ namespace ApiEstoque.Migrations
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OfficeId")
-                        .HasColumnType("int");
-
                     b.Property<int>("ShopId")
                         .HasColumnType("int");
 
@@ -48,15 +45,34 @@ namespace ApiEstoque.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OfficeId")
-                        .IsUnique();
-
                     b.HasIndex("ShopId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
+                    b.HasIndex("UserId");
 
                     b.ToTable("Employee");
+                });
+
+            modelBuilder.Entity("ApiEstoque.Models.EmployeeOfficeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OfficeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfficeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("EmployeeOffice");
                 });
 
             modelBuilder.Entity("ApiEstoque.Models.OfficeModel", b =>
@@ -72,16 +88,12 @@ namespace ApiEstoque.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ShopId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.HasIndex("ShopId");
 
@@ -101,42 +113,34 @@ namespace ApiEstoque.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(120)
-                        .HasColumnType("nvarchar(120)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("ProductCode")
                         .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ShopId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(24)
-                        .HasColumnType("nvarchar(24)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UnitOfMeasure")
                         .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductCode")
-                        .IsUnique();
 
                     b.HasIndex("ShopId");
 
@@ -156,8 +160,7 @@ namespace ApiEstoque.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -182,13 +185,11 @@ namespace ApiEstoque.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Amount")
-                        .HasMaxLength(12)
                         .HasColumnType("int");
 
                     b.Property<string>("Barcode")
                         .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreateAt")
                         .HasColumnType("datetime2");
@@ -196,25 +197,16 @@ namespace ApiEstoque.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ShopId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasMaxLength(24)
-                        .HasColumnType("nvarchar(24)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdateAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Barcode")
-                        .IsUnique();
-
                     b.HasIndex("ProductId");
-
-                    b.HasIndex("ShopId");
 
                     b.ToTable("Stock");
                 });
@@ -235,8 +227,7 @@ namespace ApiEstoque.Migrations
 
                     b.Property<string>("Reason")
                         .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ShopId")
                         .HasColumnType("int");
@@ -268,18 +259,15 @@ namespace ApiEstoque.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(45)
-                        .HasColumnType("nvarchar(45)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -290,35 +278,43 @@ namespace ApiEstoque.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
-
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("ApiEstoque.Models.EmployeeModel", b =>
                 {
-                    b.HasOne("ApiEstoque.Models.OfficeModel", "Office")
-                        .WithOne("Employee")
-                        .HasForeignKey("ApiEstoque.Models.EmployeeModel", "OfficeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("ApiEstoque.Models.ShopModel", "Shop")
-                        .WithMany("Employee")
+                        .WithMany()
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiEstoque.Models.UserModel", "User")
-                        .WithOne("Employee")
-                        .HasForeignKey("ApiEstoque.Models.EmployeeModel", "UserId")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Shop");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ApiEstoque.Models.EmployeeOfficeModel", b =>
+                {
+                    b.HasOne("ApiEstoque.Models.OfficeModel", "Office")
+                        .WithMany()
+                        .HasForeignKey("OfficeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ApiEstoque.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Office");
-
-                    b.Navigation("Shop");
 
                     b.Navigation("User");
                 });
@@ -337,7 +333,7 @@ namespace ApiEstoque.Migrations
             modelBuilder.Entity("ApiEstoque.Models.ProductModel", b =>
                 {
                     b.HasOne("ApiEstoque.Models.ShopModel", "Shop")
-                        .WithMany("Product")
+                        .WithMany()
                         .HasForeignKey("ShopId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -359,20 +355,12 @@ namespace ApiEstoque.Migrations
             modelBuilder.Entity("ApiEstoque.Models.StockModel", b =>
                 {
                     b.HasOne("ApiEstoque.Models.ProductModel", "Product")
-                        .WithMany("Stock")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApiEstoque.Models.ShopModel", "Shop")
-                        .WithMany("Stock")
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Product");
-
-                    b.Navigation("Shop");
                 });
 
             modelBuilder.Entity("ApiEstoque.Models.TransactionHistoryModel", b =>
@@ -400,32 +388,6 @@ namespace ApiEstoque.Migrations
                     b.Navigation("Shop");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ApiEstoque.Models.OfficeModel", b =>
-                {
-                    b.Navigation("Employee")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("ApiEstoque.Models.ProductModel", b =>
-                {
-                    b.Navigation("Stock");
-                });
-
-            modelBuilder.Entity("ApiEstoque.Models.ShopModel", b =>
-                {
-                    b.Navigation("Employee");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("Stock");
-                });
-
-            modelBuilder.Entity("ApiEstoque.Models.UserModel", b =>
-                {
-                    b.Navigation("Employee")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

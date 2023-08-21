@@ -16,8 +16,5 @@
         }
         public int UserId { get; set; }
         public UserModel User { get; set; }
-        public IEnumerable<EmployeeModel> Employee { get; set; }
-        public IEnumerable<ProductModel> Product { get; set; }
-        public IEnumerable<StockModel> Stock { get; set; }
     }
 }

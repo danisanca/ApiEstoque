@@ -15,6 +15,5 @@
         }
         public int ShopId { get; set; }
         public ShopModel Shop { get; set; }
-        public EmployeeModel Employee { get; set; }
     }
 }
